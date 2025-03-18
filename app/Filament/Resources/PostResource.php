@@ -18,6 +18,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\FileUpload;
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
@@ -44,6 +45,15 @@ class PostResource extends Resource
                     ->label('Etiquetas')
                     ->dehydrated(false),
 
+                FileUpload::make('images')
+                    ->label('Imágenes')
+                    ->multiple()
+                    ->image()
+                    ->maxSize(2048)
+                    ->directory('posts/images')
+                    ->reorderable()
+                    ->dehydrated(false),
+
                 RichEditor::make('description')
                     ->label('Contenido')
                     ->required()
@@ -52,10 +62,9 @@ class PostResource extends Resource
                     ])->columnSpanFull(),
             ]);
     }
-    public static function getEloquentQuery(): Builder
-{
-    return parent::getEloquentQuery()->with('labels');
-}
+    public static function getEloquentQuery(): Builder{
+        return parent::getEloquentQuery()->with(['labels', 'files']);
+    }
     public static function table(Table $table): Table
     {
         return $table
@@ -66,7 +75,7 @@ class PostResource extends Resource
                 TagsColumn::make('labels.name')
                     ->label('Etiquetas')
                     ->separator(', ')
-                    ->limit(3)  // Muestra hasta 3 etiquetas
+                    ->limit(3)
                     ->colors(['primary']),
             ])
             ->filters([

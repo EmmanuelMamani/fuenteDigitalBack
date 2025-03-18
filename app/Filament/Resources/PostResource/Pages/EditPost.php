@@ -21,6 +21,12 @@ class EditPost extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array{
         $data['labels'] = $this->record->labels->pluck('name')->toArray();
+
+        $data['images'] = $this->record->files()
+            ->where('type', 'img')
+            ->pluck('path')
+            ->toArray();
+        
         return $data;
     }
 
@@ -35,4 +41,5 @@ class EditPost extends EditRecord
         }
         $post->labels()->sync($labelIds);
     }
+    
 }

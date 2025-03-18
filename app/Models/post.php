@@ -14,7 +14,11 @@ class post extends Model
     public function section(){
         return $this->belongsTo(Section::class);
     }
+    public function files(){
+        return $this->hasMany(file_post::class, 'post_id');
+    }
     public function labels(): BelongsToMany{
         return $this->belongsToMany(Label::class, 'label_posts', 'post_id', 'label_id');
     }
+
 }
