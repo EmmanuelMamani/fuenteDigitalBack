@@ -24,6 +24,7 @@ class FilePostsRelationManager extends RelationManager
             ->schema([
                 FileUpload::make('path')
                     ->image()
+                    ->label('Imagen')
                     ->directory('posts/images')
                     ->maxSize(2048)
                     ->required(),
