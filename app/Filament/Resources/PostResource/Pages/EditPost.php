@@ -7,6 +7,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Models\Label;
 use App\Models\Label_post;
+use App\Models\File_post;
 
 class EditPost extends EditRecord
 {
@@ -20,13 +21,7 @@ class EditPost extends EditRecord
     }
 
     protected function mutateFormDataBeforeFill(array $data): array{
-        $data['labels'] = $this->record->labels->pluck('name')->toArray();
-
-        $data['images'] = $this->record->files()
-            ->where('type', 'img')
-            ->pluck('path')
-            ->toArray();
-        
+        $data['labels'] = $this->record->labels->pluck('name')->toArray();     
         return $data;
     }
 
@@ -40,6 +35,18 @@ class EditPost extends EditRecord
             $labelIds[] = $label->id;
         }
         $post->labels()->sync($labelIds);
+
+        $images = $this->data['images'] ?? []; 
+        
+        if (!empty($images)) {
+            foreach ($images as $imagePath) {
+                file_post::create([
+                    'post_id' => $post->id,
+                    'path' => $imagePath,
+                    'type' => 'img',
+                ]);
+            }
+        }
     }
     
 }

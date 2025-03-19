@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\View;
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
@@ -26,42 +28,50 @@ class PostResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                TextInput::make('title')
-                    ->label('Título')
-                    ->required()
-                    ->maxLength(100),
+{
+    return $form
+        ->schema([
+            TextInput::make('title')
+                ->label('Título')
+                ->required()
+                ->maxLength(100),
+            
+            Select::make('section_id')
+                ->label('Sección')
+                ->options(
+                    Section::usableSections()->pluck('name', 'id')->toArray()
+                )
+                ->required(),
+            
+            TagsInput::make('labels')
+                ->label('Etiquetas')
+                ->dehydrated(false),
+            
+            FileUpload::make('images')
+                ->label('Imágenes')
+                ->multiple()
+                ->image()
+                ->maxSize(2048)
+                ->directory('posts/images')
+                ->reorderable()
+                ->dehydrated(false),
+            
+            \Filament\Forms\Components\Section::make('Imágenes existentes')
+                ->schema([
+                    View::make('filament.components.images-grid')
+                        ->visible(fn($record) => $record && $record->files->isNotEmpty())
+                ])
+                ->collapsible()
+                ->collapsed(false),
 
-                Select::make('section_id')
-                    ->label('Sección')
-                    ->options(
-                        Section::usableSections()->pluck('name', 'id')->toArray()
-                    )
-                    ->required(),
-
-                TagsInput::make('labels')
-                    ->label('Etiquetas')
-                    ->dehydrated(false),
-
-                FileUpload::make('images')
-                    ->label('Imágenes')
-                    ->multiple()
-                    ->image()
-                    ->maxSize(2048)
-                    ->directory('posts/images')
-                    ->reorderable()
-                    ->dehydrated(false),
-
-                RichEditor::make('description')
-                    ->label('Contenido')
-                    ->required()
-                    ->toolbarButtons([
-                        'bold', 'italic', 'underline', 'link', 'strike', 'blockquote', 'bulletList', 'orderedList', 'codeBlock', 'code', 'undo', 'redo'
-                    ])->columnSpanFull(),
-            ]);
-    }
+            RichEditor::make('description')
+                ->label('Contenido')
+                ->required()
+                ->toolbarButtons([
+                    'bold', 'italic', 'underline', 'link', 'strike', 'blockquote', 'bulletList', 'orderedList', 'codeBlock', 'code', 'undo', 'redo'
+                ])->columnSpanFull(),
+        ]);
+}
     public static function getEloquentQuery(): Builder{
         return parent::getEloquentQuery()->with(['labels', 'files']);
     }
