@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +19,6 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\View;
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
@@ -77,6 +75,7 @@ class PostResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -88,7 +87,7 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+           RelationManagers\FilePostsRelationManager::class
         ];
     }
 
