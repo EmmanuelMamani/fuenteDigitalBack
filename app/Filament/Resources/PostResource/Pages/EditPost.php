@@ -46,6 +46,7 @@ class EditPost extends EditRecord
                     'type' => 'img',
                 ]);
             }
+            $this->redirect(request()->header('Referer', $this->getResource()::getUrl('index')));
         }
     }
     
