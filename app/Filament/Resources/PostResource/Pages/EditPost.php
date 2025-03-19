@@ -21,7 +21,7 @@ class EditPost extends EditRecord
     }
 
     protected function mutateFormDataBeforeFill(array $data): array{
-        $data['labels'] = $this->record->labels->pluck('name')->toArray();     
+        $data['labels'] = $this->record->labels->pluck('name')->toArray();  
         return $data;
     }
 
@@ -35,19 +35,6 @@ class EditPost extends EditRecord
             $labelIds[] = $label->id;
         }
         $post->labels()->sync($labelIds);
-
-        $images = $this->data['images'] ?? []; 
-        
-        if (!empty($images)) {
-            foreach ($images as $imagePath) {
-                file_post::create([
-                    'post_id' => $post->id,
-                    'path' => $imagePath,
-                    'type' => 'img',
-                ]);
-            }
-            $this->redirect(request()->header('Referer', $this->getResource()::getUrl('index')));
-        }
     }
     
 }

@@ -47,23 +47,7 @@ class PostResource extends Resource
                 ->label('Etiquetas')
                 ->dehydrated(false),
             
-            FileUpload::make('images')
-                ->label('Imágenes')
-                ->multiple()
-                ->image()
-                ->maxSize(2048)
-                ->directory('posts/images')
-                ->reorderable()
-                ->dehydrated(false),
             
-            \Filament\Forms\Components\Section::make('Imágenes existentes')
-                ->schema([
-                    View::make('filament.components.images-grid')
-                        ->visible(fn($record) => $record && $record->files->isNotEmpty())
-                ])
-                ->collapsible()
-                ->collapsed(false),
-
             RichEditor::make('description')
                 ->label('Contenido')
                 ->required()
@@ -73,7 +57,7 @@ class PostResource extends Resource
         ]);
 }
     public static function getEloquentQuery(): Builder{
-        return parent::getEloquentQuery()->with(['labels', 'files']);
+        return parent::getEloquentQuery()->with(['labels']);
     }
     public static function table(Table $table): Table
     {
