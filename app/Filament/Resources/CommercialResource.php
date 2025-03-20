@@ -18,7 +18,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BooleanColumn;
-
+use Illuminate\Support\Facades\Storage;
 class CommercialResource extends Resource
 {
     protected static ?string $model = Commercial::class;
@@ -46,7 +46,7 @@ class CommercialResource extends Resource
                     ->directory('commercials/images')
                     ->maxSize(2048)
                     ->required()
-                    ->visibility('public'),
+                    ->visibility('public')->deleteUploadedFileUsing(fn ($file) => Storage::disk('public')->delete($file)),
             ]);
     }
 
