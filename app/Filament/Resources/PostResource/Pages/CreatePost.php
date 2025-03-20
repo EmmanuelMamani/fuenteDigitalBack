@@ -23,6 +23,17 @@ class CreatePost extends CreateRecord
             $labelIds[] = $label->id;
         }
         $post->labels()->sync($labelIds);
+
+        $imagePaths = $this->data['images'] ?? [];
+
+        if (!empty($imagePaths)) {
+            foreach ($imagePaths as $imagePath) {
+                File_post::create([
+                    'post_id' => $post->id,
+                    'path' => $imagePath,
+                ]);
+            }
+        }
     }
 
 }

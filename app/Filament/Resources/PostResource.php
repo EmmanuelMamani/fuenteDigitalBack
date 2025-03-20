@@ -6,6 +6,7 @@ use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use Filament\Forms\Components\RichEditor;
 use App\Models\Post;
+use App\Models\File_post;
 use App\Models\Section;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -45,6 +46,22 @@ class PostResource extends Resource
                 ->label('Etiquetas')
                 ->dehydrated(false),
             
+            FileUpload::make('images')
+                ->image()
+                ->label('Imagen')
+                ->directory('posts/images')
+                ->maxSize(2048)
+                ->required()
+                ->dehydrated(false)
+                ->visibility('public')
+                ->multiple()
+                ->deleteUploadedFileUsing(function ($file) {
+                    $filePost = File_post::where('path', $file)->first();
+                    if ($filePost) {
+                        Storage::disk('public')->delete($filePost->path);
+                        $filePost->delete();
+                    }
+                }),
             
             RichEditor::make('description')
                 ->label('Contenido')
@@ -55,7 +72,7 @@ class PostResource extends Resource
         ]);
 }
     public static function getEloquentQuery(): Builder{
-        return parent::getEloquentQuery()->with(['labels']);
+        return parent::getEloquentQuery()->with(['labels','files']);
     }
     public static function table(Table $table): Table
     {
@@ -87,7 +104,7 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-           RelationManagers\FilePostsRelationManager::class
+          // RelationManagers\FilePostsRelationManager::class
         ];
     }
 
