@@ -19,7 +19,7 @@ class CreatePost extends CreateRecord
         
         $labelIds = [];
         foreach ($labelNames as $name) {
-            $label = Label::firstOrCreate(['name' => $name]);
+            $label = Label::firstOrCreate(['name' => strtolower($name)]);
             $labelIds[] = $label->id;
         }
         $post->labels()->sync($labelIds);

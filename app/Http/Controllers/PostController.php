@@ -28,7 +28,10 @@ class PostController extends Controller
         $relatedPosts = Post::whereHas('labels', function ($query) use ($labelIds) {
             $query->whereIn('labels.id', $labelIds);
         })
-        ->where('id', '!=', $id)
+        ->where('id', '!=', $id)->with([
+            'labels:id,name'
+            ,'files:id,path,post_id'
+        ])
         ->latest()
         ->paginate(5);
 
