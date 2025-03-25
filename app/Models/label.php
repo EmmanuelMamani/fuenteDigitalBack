@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class label extends Model
 {
     use HasFactory;
-    
+    protected $hidden = ['pivot'];
     protected $guarded = [];
 
     public function posts(): BelongsToMany{

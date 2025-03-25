@@ -86,6 +86,9 @@ class PostResource extends Resource
                     ->separator(', ')
                     ->limit(3)
                     ->colors(['primary']),
+                TextColumn::make('section.name')
+                    ->label('Seccion')
+                    ->sortable(),
             ])
             ->filters([
                 //

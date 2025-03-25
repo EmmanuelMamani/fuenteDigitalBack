@@ -38,7 +38,7 @@ class CommercialResource extends Resource
                     ->numeric()
                     ->minValue(1)
                     ->maxValue(100),
-                Toggle::make('active')->label('activo')->accepted(),
+                Toggle::make('active')->label('activo'),
 
                 FileUpload::make('path')
                     ->image()
