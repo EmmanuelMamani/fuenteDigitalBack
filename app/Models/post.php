@@ -20,5 +20,8 @@ class post extends Model
     public function labels(): BelongsToMany{
         return $this->belongsToMany(Label::class, 'label_posts', 'post_id', 'label_id');
     }
-
+    public function portada() {
+        $firstFile = $this->files()->first();
+        return $firstFile ? $firstFile->path : null;
+    }
 }

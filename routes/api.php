@@ -9,6 +9,7 @@ use App\Http\Controllers\SectionController;
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}/related', [PostController::class, 'relatedPosts']);
+Route::get('/posts/{id}', [PostController::class, 'post']);
 
 Route::get('/commercials', [CommercialController::class, 'index']);
 

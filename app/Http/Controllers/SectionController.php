@@ -17,10 +17,11 @@ class SectionController extends Controller
 
     public function Posts($id){
         $posts = Post::where('section_id', $id)
-                ->with([
-                    'labels:id,name'
-                    ,'files:id,path,post_id'
-                ])->latest()->paginate(5);
+                ->latest()->paginate(5);
+                $posts->getCollection()->transform(function ($post) {
+                    $post->portada = $post->portada();
+                    return $post;
+                });       
         return response()->json($posts);
     }
 }

@@ -8,7 +8,7 @@ use App\Models\Commercial;
 class CommercialController extends Controller
 {
     public function index(){
-        $commercials= Commercial::where('active',true)->get();
+        $commercials= Commercial::where('active',true)->get()->pluck('path');
         return response()->json($commercials);
     }
 }
